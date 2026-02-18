@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+:root {
+  --bg-sky: #87CEEB;
+  --bg-grass: #7CFC00;
+  --color-text: #2c3e50;
+  --color-primary: #ff6b6b;
+  --color-secondary: #4ecdc4;
+  --color-white: #ffffff;
+}
+
+/* index.css */
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* Scroll'u kökten engeller */
+  position: fixed;
+  /* iOS bounce etkisini önler */
+  background-color: #333;
+}
+
+/* Metinlerin ve kartın iç içe geçmesini engelleyen korumalı yapı */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-sky);
+  touch-action: none;
+  container-type: size;
+}
+
+/* Masaüstü için merkezleme (isteğe bağlı) */
+@media (min-width: 600px) {
+  body {
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .app-container {
+    height: 85vh;
+    /* Ekranın %85'ine sığdır (daha kompakt) */
+    width: auto;
+    /* Genişlik otomatik oranlansın */
+    aspect-ratio: 390 / 844;
+    /* iPhone 14 Oranı (Yaklaşık 9:19.5) */
+    max-height: 844px;
+    /* Orijinal piksel boyutunu asla geçme */
+    border-radius: 40px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Scenery */
+.background-scenery {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.road {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 25%;
+  /* Responsive height */
+  background: #deb887;
+  border-top: 5px solid #8b4513;
+  background-image: repeating-linear-gradient(90deg,
+      #deb887 0,
+      #deb887 20px,
+      #d2a679 20px,
+      #d2a679 40px);
+  animation: moveRoad 2s linear infinite;
+}
+
+.clouds {
+  position: absolute;
+  top: 5%;
+  left: 0;
+  width: 200%;
+  height: 15%;
+  background:
+    radial-gradient(circle, white 50%, transparent 50%) 0 0,
+    radial-gradient(circle, white 50%, transparent 50%) 50px 25px;
+  background-size: 100px 100px;
+  opacity: 0.8;
+  animation: moveClouds 20s linear infinite;
+}
+
+@keyframes moveRoad {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-40px);
+  }
+}
+
+@keyframes moveClouds {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Interaction Scene Layout */
+.scene-interaction {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Karakter Alanı: Yazıyı ve karakterleri dikeyde yönetir */
+.character-area {
+  flex: 1;
+  /* Ekranın üst kısmını tamamen doldurur */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* Karakterleri karta yapıştırır */
+  align-items: center;
+  position: relative;
+  min-height: 0;
+  /* Çok dar ekranlarda küçülmeye izin verir */
+  padding-top: 20px;
+}
+
+.passed-text {
+  position: absolute;
+  top: 10%;
+  /* Yazı boyutunu sınırladık: 32px ile 64px arası */
+  font-size: clamp(2rem, 10vw, 4rem);
+  color: #4CAF50;
+  font-family: 'Impact', sans-serif;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  /* Karakterlerin arkasında kalması için */
+  opacity: 0.8;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.interaction-img {
+  max-width: 90%;
+  max-height: 80%;
+  /* Yazıya ve karta yer bırakır */
+  object-fit: contain;
+  z-index: 2;
+  /* Yazının önünde durur */
+  margin-bottom: -5px;
+  /* Kartla arasındaki boşluğu kapatır */
+}
+
+/* Diyalog Kartı: İçindeki metinleri dizginler */
+.dialog-card {
+  width: 100%;
+  background: white;
+  border-top: 4px solid #FFC0CB;
+  border-left: 4px solid #FFC0CB;
+  border-right: 4px solid #FFC0CB;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  padding: 1.5rem 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  flex-shrink: 0;
+  /* Kartın yüksekliği asla ezilmez */
+  z-index: 10;
+  position: relative;
+}
+
+.dialog-text {
+  /* Metnin devleşmesini engelleyen sabit aralık */
+  font-size: clamp(1rem, 4.5vw, 1.25rem);
+  color: #2c3e50;
+  text-align: center;
+  margin: 0 0 1.2rem 0;
+  font-weight: 600;
+  line-height: 1.4;
+  word-wrap: break-word;
+  /* Uzun kelimelerin taşmasını engeller */
+}
+
+.buttons-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.game-btn {
+  flex: 1;
+  height: 48px;
+  /* İdeal dokunmatik yüksekliği */
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
+  font-family: 'Fredoka', cursive;
+  transition: transform 0.1s;
+}
+
+.game-btn:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.btn-yes {
+  background-color: #4CAF50;
+}
+
+.btn-no {
+  background-color: #FF5252;
+}
+
+/* Shrek Car (for driving scene) */
+.shrek-car {
+  position: absolute;
+  bottom: 15%;
+  width: 60%;
+  z-index: 5;
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
+}
+
+/* Success Scene */
+.scene-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.success-text {
+  font-size: 15cqi;
+  color: #fff;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+}
+
+.shrek-happy {
+  width: 70%;
+  max-width: 300px;
+  z-index: 10;
+}
+
+.flower-rain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.flower-particle {
+  position: absolute;
+  top: -50px;
+}
